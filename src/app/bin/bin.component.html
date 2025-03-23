@@ -1,0 +1,51 @@
+
+<form [formGroup]="binForm" (ngSubmit)="addBinsData()">
+    <label>Collection Day:</label>
+    <select formControlName="collectionDay">
+        <option [value]="">Select Day</option>
+        @for(i of numDays; track $index) {
+            <option [value]="$index">{{i}}</option>
+        }
+    </select>
+    <div formArrayName="bins">
+        @for(bin of binItems.controls; track $index) {
+            <div [formGroupName]="$index">
+                <label>colour:</label>
+                <input formControlName="colour">
+                <label>Interval:</label>
+                <input formControlName="interval" type="number">
+                <label>From:</label>
+                <input formControlName="fromWeek" type="number">
+                <label>Too:</label>
+                <input formControlName="toWeek" type="number">
+            </div>
+        }
+    </div>
+    <div formArrayName="abnormalWeeks">
+        @for(bin of abnormalWeeks.controls; track $index) {
+            <div [formGroupName]="$index">
+                <label>Week Number:</label>
+                <input formControlName="weekNumber" type="number">
+                <label>Collection Day:</label>
+                <select formControlName="collectionDay">
+                    <option [value]="">Select Day</option>
+                    @for(i of numDays; track $index) {
+                        <option [value]="$index">{{i}}</option>
+                    }
+                </select>            
+            </div>
+        }
+    </div>
+    <button type="button" (click)="addBin()">Add bin</button>
+    <button type="button" (click)="addAbnormal()">Add Abnormal Week</button>
+    <button type="submit">Generate Bin data</button>
+</form>
+
+@for(week of weeks; track $index) {
+    <div>{{week.date}} {{week.weekNum}}</div>
+    @for(bin of week.bins; track $index) {
+        <div>
+            {{bin.colour}}
+        </div>
+    }
+}

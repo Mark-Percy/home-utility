@@ -1,12 +1,25 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterOutlet, RouterLink} from '@angular/router';
+import { AccountService } from './account.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, RouterLink],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
 })
 export class AppComponent {
   title = 'home-utility';
+
+  constructor(private account: AccountService, private router: Router) {
+  
+  }
+  signOut() {
+    this.account.signOut();
+    this.router.navigate(['login']);
+  }
+
+  deleteAccount() {
+    this.account.deleteAccount();
+  }
 }

@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { RouterOutlet, RouterLink} from '@angular/router';
 import { AccountService } from './account.service';
 import { Router } from '@angular/router';
+import { User } from '@angular/fire/auth';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -10,16 +12,23 @@ import { Router } from '@angular/router';
 })
 export class AppComponent {
   title = 'home-utility';
+  user$: Observable<User | null>;
+  userSub;
+  user: User | null = null;
 
-  constructor(private account: AccountService, private router: Router) {
-  
+  constructor(private accountService: AccountService, private router: Router) {
+    this.user$ = this.accountService.getUser();
+    this.userSub = this.user$.subscribe((user) => {
+      this.user = user
+    })
   }
-  signOut() {
-    this.account.signOut();
+  async signOut() {
+    await this.accountService.signOut();
+    console.log('here')
     this.router.navigate(['login']);
   }
 
   deleteAccount() {
-    this.account.deleteAccount();
+    this.accountService.deleteAccount();
   }
 }

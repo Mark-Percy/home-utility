@@ -1,24 +1,27 @@
-import { createEnvironmentInjector, Injectable } from '@angular/core';
-import { createUserWithEmailAndPassword, Auth, signOut, signInWithEmailAndPassword, deleteUser, user} from '@angular/fire/auth';
+import { createEnvironmentInjector, Injectable, signal } from '@angular/core';
+import { createUserWithEmailAndPassword, Auth, signOut, signInWithEmailAndPassword, deleteUser, user, User} from '@angular/fire/auth';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AccountService {
+  user$: Observable<User | null>;
 
   constructor(private auth: Auth) { 
+    this.user$ = user(this.auth)
   }
 
-  signin (loginForm: any) {
-    signInWithEmailAndPassword(this.auth, loginForm.email, loginForm.password);
+  async signin (loginForm: any) {
+    return await signInWithEmailAndPassword(this.auth, loginForm.email, loginForm.password);
   }
 
-  createAccount(loginForm: any) {
-    createUserWithEmailAndPassword(this.auth, loginForm.email, loginForm.password);
+  async createAccount(loginForm: any) {
+    return await createUserWithEmailAndPassword(this.auth, loginForm.email, loginForm.password);
   }
 
-  signOut() {
-    signOut(this.auth);
+  async signOut() {
+    await signOut(this.auth);
   }
 
   deleteAccount() {
@@ -31,6 +34,8 @@ export class AccountService {
     }
   }
   getUser() {
-    return this.auth.currentUser
+    console.log(this.user$);
+    
+    return this.user$
   }
 }

@@ -1,9 +1,10 @@
 <h1>House utility</h1>
 <nav>
   <ul>
-    <li><a routerLink="/login" routerLinkActive="active">Login</a></li>
+    @if(!user) {
+      <li><a routerLink="/login" routerLinkActive="active">Login</a></li>
+    }
     <li><a routerLink="/dashboard" routerLinkActive="active">Dashboard</a></li>
-    <li><a routerLink="/" routerLinkActive="active">Home</a></li>
   </ul>
 </nav>
 <button (click)="signOut()">Logout</button>

@@ -19,11 +19,11 @@ export class LoginComponent {
     });
   }
 
-  submitLogin() {
+  async submitLogin() {
     if(this.login) {
-      this.account.signin(this.loginForm.value)
+      await this.account.signin(this.loginForm.value)
     } else {
-      this.account.createAccount(this.loginForm.value)
+      await this.account.createAccount(this.loginForm.value)
     }
     this.router.navigate(['dashboard']);
   }

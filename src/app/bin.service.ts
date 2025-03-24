@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Firestore, collection, doc, getDoc, setDoc } from '@angular/fire/firestore';
 import { AccountService } from './account.service';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -9,8 +10,9 @@ export class BinService {
 
   constructor(private fs: Firestore, private accountService: AccountService) { }
 
-  addYearData(binData: YearInterface, year: number) {
-    const user = this.accountService.getUser()
+  async addYearData(binData: YearInterface, year: number) {
+    const user$ = this.accountService.getUser()
+    const user = await firstValueFrom(user$);
     if(!user) {
       return
     }
@@ -19,7 +21,8 @@ export class BinService {
   }
 
   async getYearData(year:number): Promise<YearInterface | null> {
-    const user = this.accountService.getUser()
+    const user$ = this.accountService.getUser()
+    const user = await firstValueFrom(user$);
     if(!user) {
       return null
     }

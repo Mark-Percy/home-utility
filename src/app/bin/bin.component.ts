@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormGroup, ReactiveFormsModule, FormBuilder, FormArray, Form} from '@angular/forms';
+import { BinService, BinInterface, AbnormalWeekInterface} from '../bin.service';
 
 @Component({
   selector: 'app-bin',
@@ -13,17 +14,30 @@ export class BinComponent {
   binForm: FormGroup;
   binItems: FormArray;
   abnormalWeeks: FormArray;
-  weeks: WeekInterface[];
-  constructor(private fb: FormBuilder) {
+  weeks: WeekInterface[] | null = null;
+  year: number;
+  currDate: Date;
+  constructor(private fb: FormBuilder, private binService: BinService) {
     this.binForm = this.fb.group({
       collectionDay: '',
       bins: this.fb.array([]),
       abnormalWeeks:this.fb.array([])
     })
 
+    this.currDate = new Date();
+    this.year = this.currDate.getFullYear()
     this.binItems = this.getBins();
     this.abnormalWeeks = this.getAbnormalWeeks();
-    this.weeks = this.generateWeeks();
+    const binsDataSnap = this.getBinsData();
+    binsDataSnap.then((binsData) => {
+      if(binsData == null) {
+        this.weeks = this.generateWeeks();
+      } else {
+        const abnormalWeeksMap: Map<number, number> = this.createAbnormalWeeksMap(binsData.abnormalWeeks);
+        console.log(binsData.bins);
+        this.weeks = this.generateWeeks(binsData.collectionDay, binsData.bins, abnormalWeeksMap);
+      }
+    })
   }
 
   addBinsData() {
@@ -33,13 +47,12 @@ export class BinComponent {
     }
     const bins: BinInterface[] = this.binForm.get('bins')?.value
     const abnormalWeeks: AbnormalWeekInterface[] = this.binForm.get('abnormalWeeks')?.value
-    const abnormalWeeksMap: Map<number, number> = new Map()
-    for(let i = 0; i < abnormalWeeks.length; i++) {
-      abnormalWeeksMap.set(Number(abnormalWeeks[i].weekNumber), Number(abnormalWeeks[i].collectionDay)+1)
-    }
+    const abnormalWeeksMap = this.createAbnormalWeeksMap(abnormalWeeks)
     
+    this.binService.addYearData(this.binForm.value, this.year)
     this.weeks = this.generateWeeks(Number(weekNum.value)+1, bins, abnormalWeeksMap)
   }
+
   addBin() {
     const bins: FormArray = this.getBins();
     
@@ -89,9 +102,12 @@ export class BinComponent {
       }
       const binsForWeek: BinInterface[] = []
       bins?.forEach((bin) => {
+        console.log(bin.colour);
+        
         if(bin.fromWeek == weekNum && (bin.toWeek == null || bin.toWeek > weekNum)) {
+          console.log(bin.fromWeek)
           bin.fromWeek += bin.interval
-          binsForWeek.push(bin)
+          binsForWeek.push(bin);
         }
       })
       currDate.setDate(currDate.getDate() + diffNumber)
@@ -101,6 +117,18 @@ export class BinComponent {
     }
     return weeks
   }
+
+  getBinsData() {
+    return this.binService.getYearData(this.year);
+  }
+
+  createAbnormalWeeksMap(abnormalWeeks: AbnormalWeekInterface[]) {
+    const abnormalWeeksMap = new Map()
+    for(let i = 0; i < abnormalWeeks.length; i++) {
+      abnormalWeeksMap.set(abnormalWeeks[i].weekNumber, abnormalWeeks[i].collectionDay+1)
+    }
+    return abnormalWeeksMap
+  }
 }
 
 
@@ -108,16 +136,4 @@ interface WeekInterface {
   date: Date;
   weekNum: number;
   bins?: BinInterface[];
-}
-
-interface BinInterface {
-  colour: string;
-  interval: number;
-  fromWeek: number;
-  toWeek: number | null;
-}
-
-interface AbnormalWeekInterface {
-  weekNumber: number;
-  collectionDay: number;
 }

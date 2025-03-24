@@ -4,19 +4,19 @@
     <select formControlName="collectionDay">
         <option [value]="">Select Day</option>
         @for(i of numDays; track $index) {
-            <option [value]="$index">{{i}}</option>
+            <option [ngValue]="$index">{{i}}</option>
         }
     </select>
     <div formArrayName="bins">
         @for(bin of binItems.controls; track $index) {
             <div [formGroupName]="$index">
-                <label>colour:</label>
+                <label>Colour:</label>
                 <input formControlName="colour">
                 <label>Interval:</label>
                 <input formControlName="interval" type="number">
                 <label>From:</label>
                 <input formControlName="fromWeek" type="number">
-                <label>Too:</label>
+                <label>To:</label>
                 <input formControlName="toWeek" type="number">
             </div>
         }
@@ -30,7 +30,7 @@
                 <select formControlName="collectionDay">
                     <option [value]="">Select Day</option>
                     @for(i of numDays; track $index) {
-                        <option [value]="$index">{{i}}</option>
+                        <option [ngValue]="$index">{{i}}</option>
                     }
                 </select>            
             </div>

@@ -1,0 +1,43 @@
+section {
+    display: flex;
+    width: 95vw;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+article {
+    border: 1px grey solid;
+    margin: 1px;
+    border-radius: 25px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding: 3px 3px;
+}
+
+article h3 {
+    margin: 0;
+    grid-area: 1 / 1 / 1 / 4;
+    align-self: center;
+    justify-self: center;
+}
+
+@media only screen and (max-width: 600px)  {
+    article {
+        width: 150px;
+    }
+}
+
+article h4 {
+    margin:0 2px;
+    grid-column: 1 / 2;
+    justify-self: center;
+}
+.bin-container {
+    display: flex;
+}
+.bin-container p {
+    margin: 0 2px
+}
+form {
+    margin-bottom: 5px;
+}

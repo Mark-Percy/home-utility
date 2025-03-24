@@ -1,1 +1,53 @@
 /* You can add global styles to this file, and also import other style files */
+body, button, select, input {
+    font-family: "Open Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 1px;
+    font-style: normal;
+}
+body {
+    background-color: rgb(54, 49, 49);
+    color: rgb(226, 208, 208);
+}
+nav {
+    display: flex;
+    padding: 6px 0;
+}
+nav h1 {
+    font-size: 24px;
+}
+ul, li, a, h1 { 
+    text-decoration: none;
+    list-style-type: none;
+    padding: 0;
+    margin:0;
+}
+ul {
+    display: flex;
+    margin-bottom: 5px;
+}
+
+button, .button {
+    background-color: rgb(62, 88, 83);
+    border: none;
+    color: rgb(226, 208, 208);
+    cursor: pointer;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+nav button, nav a.button {
+    background-color: rgb(54, 49, 49);
+    font-size: 24px;
+
+}
+
+nav button:hover, nav a.button:hover {
+    background-color: rgb(88, 86, 86);
+}
+
+.success {
+    background-color: rgb(0, 90, 35);
+}

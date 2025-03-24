@@ -1,13 +1,11 @@
-<h1>House utility</h1>
 <nav>
-  <ul>
-    @if(!user) {
-      <li><a routerLink="/login" routerLinkActive="active">Login</a></li>
-    }
-    <li><a routerLink="/dashboard" routerLinkActive="active">Dashboard</a></li>
-  </ul>
+  <h1>House utility</h1>
+  @if(!user) {
+    <a class="button" routerLink="/login" routerLinkActive="active">Login</a>
+  }
+  <a class="button" routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+  <button (click)="signOut()">Logout</button>
+  <button (click)="deleteAccount()">Delete Account</button>
 </nav>
-<button (click)="signOut()">Logout</button>
-<button (click)="deleteAccount()">delete Account</button>
 
 <router-outlet></router-outlet>

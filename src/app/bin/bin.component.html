@@ -38,18 +38,20 @@
     </div>
     <button type="button" (click)="addBin()">Add bin</button>
     <button type="button" (click)="addAbnormal()">Add Abnormal Week</button>
-    <button type="submit">Generate Bin data</button>
+    <button type="submit" class="success">Generate Bin data</button>
 </form>
-
-@for(month of months; track $index) {
-    <div>
-        <div>{{monthsNames[month.monthNum]}}</div>
-        @for(week of month.weeksData; track $index) {
-            <div>{{week.date.getDate()}}</div>
-            @for(bin of week.bins; track $index) {
-                <div>{{bin.colour}}</div>
+<section>
+    @for(month of months; track $index) {
+        <article>
+            <h3>{{monthsNames[month.monthNum]}}</h3>
+            @for(week of month.weeksData; track $index) {
+                <h4>{{week.date.getDate()}}</h4>
+                <div class="bin-container">    
+                    @for(bin of week.bins; track $index) {
+                        <p>{{bin.colour}}</p>
+                    }
+                </div>
             }
-        }
-        <div></div>
-    </div>
-}
+        </article>
+    }
+</section>

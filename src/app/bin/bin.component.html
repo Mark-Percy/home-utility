@@ -4,7 +4,7 @@
     <select formControlName="collectionDay">
         <option [value]="">Select Day</option>
         @for(i of numDays; track $index) {
-            <option [ngValue]="$index">{{i}}</option>
+            <option [ngValue]="$index+1">{{i}}</option>
         }
     </select>
     <div formArrayName="bins">
@@ -30,7 +30,7 @@
                 <select formControlName="collectionDay">
                     <option [value]="">Select Day</option>
                     @for(i of numDays; track $index) {
-                        <option [ngValue]="$index">{{i}}</option>
+                        <option [ngValue]="$index+1">{{i}}</option>
                     }
                 </select>            
             </div>

@@ -34,7 +34,6 @@ export class BinComponent {
         this.weeks = this.generateWeeks();
       } else {
         const abnormalWeeksMap: Map<number, number> = this.createAbnormalWeeksMap(binsData.abnormalWeeks);
-        console.log(binsData.bins);
         this.weeks = this.generateWeeks(binsData.collectionDay, binsData.bins, abnormalWeeksMap);
       }
     })
@@ -50,7 +49,7 @@ export class BinComponent {
     const abnormalWeeksMap = this.createAbnormalWeeksMap(abnormalWeeks)
     
     this.binService.addYearData(this.binForm.value, this.year)
-    this.weeks = this.generateWeeks(Number(weekNum.value)+1, bins, abnormalWeeksMap)
+    this.weeks = this.generateWeeks(weekNum.value, bins, abnormalWeeksMap)
   }
 
   addBin() {
@@ -102,10 +101,8 @@ export class BinComponent {
       }
       const binsForWeek: BinInterface[] = []
       bins?.forEach((bin) => {
-        console.log(bin.colour);
         
         if(bin.fromWeek == weekNum && (bin.toWeek == null || bin.toWeek > weekNum)) {
-          console.log(bin.fromWeek)
           bin.fromWeek += bin.interval
           binsForWeek.push(bin);
         }
@@ -125,7 +122,7 @@ export class BinComponent {
   createAbnormalWeeksMap(abnormalWeeks: AbnormalWeekInterface[]) {
     const abnormalWeeksMap = new Map()
     for(let i = 0; i < abnormalWeeks.length; i++) {
-      abnormalWeeksMap.set(abnormalWeeks[i].weekNumber, abnormalWeeks[i].collectionDay+1)
+      abnormalWeeksMap.set(abnormalWeeks[i].weekNumber, abnormalWeeks[i].collectionDay)
     }
     return abnormalWeeksMap
   }

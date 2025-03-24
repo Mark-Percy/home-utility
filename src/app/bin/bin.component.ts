@@ -10,13 +10,15 @@ import { BinService, BinInterface, AbnormalWeekInterface} from '../bin.service';
 })
 export class BinComponent {
 
-  numDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  dayNames:string[] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  monthsNames:string[] = ['January', 'February', 'March', 'April', 'May', 'June', 'July','August', 'September', 'October', 'November', 'December'];
   binForm: FormGroup;
   binItems: FormArray;
   abnormalWeeks: FormArray;
-  weeks: WeekInterface[] | null = null;
+  months: MonthInterface[] | null = null;
   year: number;
   currDate: Date;
+
   constructor(private fb: FormBuilder, private binService: BinService) {
     this.binForm = this.fb.group({
       collectionDay: '',
@@ -31,10 +33,10 @@ export class BinComponent {
     const binsDataSnap = this.getBinsData();
     binsDataSnap.then((binsData) => {
       if(binsData == null) {
-        this.weeks = this.generateWeeks();
+        this.months = this.generateMonths();
       } else {
         const abnormalWeeksMap: Map<number, number> = this.createAbnormalWeeksMap(binsData.abnormalWeeks);
-        this.weeks = this.generateWeeks(binsData.collectionDay, binsData.bins, abnormalWeeksMap);
+        this.months = this.generateMonths(binsData.collectionDay, binsData.bins, abnormalWeeksMap);
       }
     })
   }
@@ -49,7 +51,7 @@ export class BinComponent {
     const abnormalWeeksMap = this.createAbnormalWeeksMap(abnormalWeeks)
     
     this.binService.addYearData(this.binForm.value, this.year)
-    this.weeks = this.generateWeeks(weekNum.value, bins, abnormalWeeksMap)
+    this.months = this.generateMonths(weekNum.value, bins, abnormalWeeksMap)
   }
 
   addBin() {
@@ -80,7 +82,7 @@ export class BinComponent {
     return this.binForm.get('abnormalWeeks') as FormArray;
   }
 
-  generateWeeks(day?: number, bins?:BinInterface[], abnormalWeeks?: Map<number, number>): WeekInterface[] {
+  generateMonths(day?: number, bins?:BinInterface[], abnormalWeeks?: Map<number, number>): MonthInterface[] | null {
     let currDate: Date = new Date()
     const currYear: number = currDate.getFullYear()
     currDate.setDate(1)
@@ -91,10 +93,18 @@ export class BinComponent {
       if(diff < 0) {diff = 7 + diff}
       currDate.setDate(currDate.getDate() + diff)
     }
-    const weeks: WeekInterface[] = []
+    let weeks: WeekInterface[] = []
     let weekNum = 1
+    const months: MonthInterface[] = []
+    const monthsContained:number[] = []
     while(currDate.getFullYear() == currYear) {
-      let diffNumber = 0
+      const currMonth: number = currDate.getMonth()
+      if(!monthsContained.includes(currMonth) && currMonth != 0) {
+        monthsContained.push(currMonth)
+        months.push({monthNum: currMonth - 1, weeksData: weeks})
+        weeks = [];
+      }
+      let diffNumber: number = 0
       if(day && abnormalWeeks && abnormalWeeks.has(weekNum) && abnormalWeeks.get(weekNum) != undefined){
         const dayofWeek = abnormalWeeks.get(weekNum)
         if(dayofWeek != undefined) diffNumber = dayofWeek - day
@@ -112,7 +122,10 @@ export class BinComponent {
       weekNum += 1
       currDate.setDate(currDate.getDate() + (7 - diffNumber));
     }
-    return weeks
+
+    months.push({monthNum: 11, weeksData: weeks})
+
+    return months
   }
 
   getBinsData() {
@@ -133,4 +146,8 @@ interface WeekInterface {
   date: Date;
   weekNum: number;
   bins?: BinInterface[];
+}
+interface MonthInterface {
+  monthNum: number;
+  weeksData: WeekInterface[]
 }
